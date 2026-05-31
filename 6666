@@ -19,6 +19,14 @@
       "homePage": "./html/枫叶.html"
       },
         {
+      "key": "ZJ",
+      "name": "厂长",
+      "type": 3,
+      "changeable": 0,
+      "api": "csp_fwngye",
+      "homePage": "./html/厂长.html"
+      },
+        {
             "key": "豆瓣",
             "name": "豆瓣｜首页",
             "type": 3,
