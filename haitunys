@@ -39,13 +39,6 @@
         "homePage":"https://fgblh.github.io/uhuj.github.io/ptt.html"
       },
       {
-        "key":"LV",
-        "name":"🐬LIBVIO影视",
-        "type":3,
-        "api":"csp_libvio",
-        "homePage":"https://fgblh.github.io/uhuj.github.io/libvio.html"
-      },
-      {
       "key": "非凡",
       "name": "🐬非凡影视",
       "type": 1,
@@ -84,7 +77,7 @@
         "海外动漫"
       ]
     },
-		 {
+	{
       "key": "天涯资源",
       "name": "🐬天涯资源(有三级片)",
       "type": 0,
@@ -139,7 +132,6 @@
         "日韩动漫"
       ]
     },
-      
       {
             "key": "牛牛影视",
             "name": "🐬牛牛影视｜追剧",
@@ -191,7 +183,7 @@
                 "足球"
             ]
         }, 
-          {
+    {
       "key": "雲飛影视",
       "name": "🐬雲飛影视｜追剧",
       "type": 1,
@@ -300,23 +292,6 @@
         "homePage":"https://fgblh.github.io/uhuj.github.io/52体育.html"
       },
         {
-        "key":"TQ",
-        "name":"🐬甜圈丨短剧",
-        "type":3,
-        "api":"csp_tq",
-        "homePage":"https://fgblh.github.io/uhuj.github.io/甜圈.html"
-      },
-         {
-            "key": "七星短剧",
-            "name": "🐬七星丨短剧",
-            "type": 3,
-            "api": "https://mpimg.cn/down.php/48e9d346cdf6da376c53136693bec95a.py",
-            "searchable": 1,
-            "changeable": 1,
-            "quickSearch": 1,
-            "filterable": 1
-        },
-        {
       "key": "cj_360资源",
       "name": "🐬360丨短剧",
       "type": 1,
@@ -356,6 +331,16 @@
 			"type": 3,
 			"api": "https://xn--fjq53n.xyz/Ting/yinyue/网易云音乐1.py"
 		},
+         {
+            "key": "51吃瓜",
+            "name": "🐬51吃瓜",
+            "type": 3,
+            "api": "https://https://fgblh.github.io/uhuj.github.io/51吃瓜.py",
+            "searchable": 1,
+            "changeable": 1,
+            "quickSearch": 1,
+            "filterable": 1
+        },
         {
         "key":"WhosTV",
         "name":"🐬MissAV🔞",
