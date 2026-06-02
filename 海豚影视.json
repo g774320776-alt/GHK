@@ -123,7 +123,6 @@
         "日韩动漫"
       ]
     },
-      
       {
             "key": "牛牛影视",
             "name": "🐬牛牛影视｜追剧",
@@ -351,7 +350,7 @@
     },
          {
             "key": "X细胞",
-            "name": "🐬X细胞"｜🔞",
+            "name": "🐬X细胞｜🔞",
             "type": 1,
             "api": "https://www.xxibaozyw.com/api.php/provide/vod/",
             "quickSearch": 1,
