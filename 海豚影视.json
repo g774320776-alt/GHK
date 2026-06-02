@@ -316,6 +316,15 @@
 			"api": "https://xn--fjq53n.xyz/Ting/yinyue/网易云音乐1.py"
 		},
 		{
+            "key": "黑料X",
+            "name": "🐬黑料X｜🔞",
+            "type": 1,
+            "api": "https://www.heiliaozyapi.com/api.php/provide/vod/?ac=list",
+            "quickSearch": 1,
+            "searchable": 1,
+            "filterable": 0
+        },
+		{
             "key": "鸡坤",
             "name": "🐬鸡坤｜🔞",
             "type": 1,
