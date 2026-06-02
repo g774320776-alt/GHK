@@ -298,7 +298,14 @@
         "api":"csp_52sp",
         "homePage":"https://fgblh.github.io/uhuj.github.io/52体育.html"
       },
-        {
+       {
+        "key":"TQ",
+        "name":"🐬甜圈短剧",
+        "type":3,
+        "api":"csp_tq",
+        "homePage":"https://fgblh.github.io/uhuj.github.io/甜圈短剧.html"
+      },
+    {
       "key": "cj_360资源",
       "name": "🐬360丨短剧",
       "type": 1,
