@@ -29,6 +29,7 @@
         "api":"https://file.icve.com.cn/file_doc/249/899/3E7E0C8A023B624CEC6BDCC200F06F02.js",
         "ext":"https://cdn.waimaimingtang.com/file/images/bwc/20251023002108-a4795930ec.js"
         },
+		{"key": "1080资源库", "name": "🐬1080资源库(有三级片)", "type": 1, "api": "https://api.1080zyku.com/inc/api_mac10.php", "searchable": 1, "quickSearch": 1, "filterable": 1},
 		{
       "key": "非凡",
       "name": "🐬非凡影视",
