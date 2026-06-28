@@ -2344,39 +2344,6 @@
     ],
     "doh": [
 		{
-            "key": "leo_danmaku",
-            "name": "LEO | 弹幕",
-            "type": 3,
-            "api": "csp_DanmakuSpider",
-            "searchable": 1,
-            "changeable": 0,
-            "index": 1,
-   "jar": "https://gh-proxy.org/https://github.com/Silent1566/CatVodSpider/raw/refs/heads/main/jar/danmu.jar",
-            "ext": {
-                "apiUrls": [
-                    "https://dm.abai.ccwu.cc/abai|LogVar",
-                    "https://dmk.abai.ccwu.cc/api/v1/abaibai|御坂",
-                    "https://dm.660505.xyz:8443/a123456|W佬",
-"https://danmaku.banye.tech:17777/87654321",
-"https://danmu.qianting168.com/456765847636987622146901",
-"https://logvar-danmu.rinrin.top/87654321",
-"https://dm.abai.ccwu.cc/abai",
-"https://88920.dpdns.org",
-"https://logvar-danmu.rinrin.top",
-"https://danm.lubao2.de5.net/87654321",
-                    "https://danmu.lily.lat/lilyemby|Lily"
-                ],
-                "autoPushEnabled": true,
-                "silentMode": true,
-                "danmakuStyle": "经典模式",
-                "proxyPort": 5575,
-                "lpAlpha": 0.9,
-                "lpWidth": 0.9,
-                "lpHeight": 0.85,
-                "titleMappingsUrl": "https://gh-proxy.com/https://raw.githubusercontent.com/goodcommunication/mydm/main/yins.json"
-            }
-        },
-		{
             "name": "Google",
             "url": "https://dns.google/dns-query",
             "ips": [
