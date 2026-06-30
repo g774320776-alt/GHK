@@ -101,12 +101,6 @@
 			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/热播APP.py"
 		},
 		{
-			"key": "ldvm",
-			"name": "🐬零度影视APP.py",
-			"type": 3,
-			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/零度影视APP.py"
-		},
-		{
 			"key": "kf",
 			"name": "🐬咖啡体育直播.py",
 			"type": 3,
