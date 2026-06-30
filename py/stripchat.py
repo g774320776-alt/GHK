@@ -80,7 +80,7 @@ class Spider(Spider):
             videos.append({
                 "vod_id": name,
                 "vod_name": f"{flag}{name}",
-                "vod_pic": f"https://img.doppiocdn.net/thumbs/{stamp}/{id}",
+                "vod_pic": f"https://img.doppiocdn.org/thumbs/{stamp}/{id}",
                 "vod_remarks": remark
             })
         total = int(rsp['filteredCount'])
@@ -148,14 +148,14 @@ class Spider(Spider):
             videos.append({
                 "vod_id": name,
                 "vod_name": f"{flag}{name}",
-                "vod_pic": f"https://img.doppiocdn.net/thumbs/{stamp}/{id}",
+                "vod_pic": f"https://img.doppiocdn.org/thumbs/{stamp}/{id}",
                 "vod_remarks": remark
             })
         result['list'] = videos
         return result
 
     def playerContent(self, flag, id, vipFlags):
-        domain = f"https://edge-hls.doppiocdn.net/hls/{id}/master/{id}_auto.m3u8?playlistType=lowLatency"
+        domain = f"https://edge-hls.doppiocdn.org/hls/{id}/master/{id}_auto.m3u8?playlistType=lowLatency"
         rsp = requests.get(domain, headers=self.headers).text
         lines = rsp.strip().split('\n')
         psch = ''
