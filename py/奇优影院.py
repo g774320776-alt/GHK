@@ -42,7 +42,7 @@ class Spider(Spider):
     
     def homeVideoContent(self):
         try:
-            rsp = self.fetch("https://www.qivod.com/")
+            rsp = self.fetch("https://www.qivod.com")
             root = self.parse_html(rsp.content)
             if not root:
                 return {'list': []}
