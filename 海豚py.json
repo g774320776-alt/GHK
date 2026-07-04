@@ -11,12 +11,6 @@
           "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/芒果TV.py"
         },
 		{
-			"key": "fY",
-			"name": "🐬盘捜.py",
-			"type": 3,
-			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/GHK/refs/heads/main/py/盘捜.py"
-		},
-		{
       "key": "ppx",
       "name": "🐬皮皮虾.py",
       "type": 3,
