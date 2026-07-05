@@ -34,21 +34,8 @@ class Spider(Spider):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
         'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-full-version': '"133.0.6943.98"',
-        'sec-ch-ua-arch': '"x86"',
-        'sec-ch-ua-platform': '"Windows"',
-        'sec-ch-ua-platform-version': '"19.0.0"',
-        'sec-ch-ua-model': '""',
         'sec-ch-ua-full-version-list': '"Not(A:Brand";v="99.0.0.0", "Google Chrome";v="133.0.6943.98", "Chromium";v="133.0.6943.98"',
-        'dnt': '1',
-        'upgrade-insecure-requests': '1',
-        'sec-fetch-site': 'none',
-        'sec-fetch-mode': 'navigate',
-        'sec-fetch-user': '?1',
-        'sec-fetch-dest': 'document',
         'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-        'priority': 'u=0, i'
     }
 
     def homeContent(self, filter):
@@ -144,6 +131,11 @@ class Spider(Spider):
 
     def detailContent(self, ids):
         data = self.getpq(ids[0])
+        link = data('link[rel="preload"][as="fetch"][crossorigin="true"]').attr('href')
+        if  link:
+            ggggx = f"多音画$666_{link}"
+        else:
+            ggggx = f"嗅探${ids[0]}"
         vn = data('meta[property="og:title"]').attr('content')
         dtext = data('#video-tags-list-container')
         href = dtext('a').attr('href')
@@ -155,137 +147,32 @@ class Spider(Spider):
             'vod_name': vn,
             'vod_director': pdtitle,
             'vod_remarks': data('.rb-new__info').text(),
-            'vod_play_from': 'Xhamster',
-            'vod_play_url': ''
+            'vod_play_from': '老僧酿酒',
+            'vod_play_url': ggggx
         }
-        try:
-            plist = []
-            html_content = data.outerHtml()
-            
-            # 尝试从页面中提取视频URL
-            import re
-            hls_urls = set()
-            
-            # 只匹配m3u8格式链接
-            hls_patterns = [
-                r'setVideoHLS\(["\']([^"\']+\.m3u8)["\']\)',
-                r'"hlsUrl"\s*:\s*["\']([^"\']+\.m3u8)["\']',
-                r'hls\s*:\s*[{\s]*url\s*:\s*["\']([^"\']+\.m3u8)["\']',
-                r'["\'](https?:\/\/[^"\']+\.m3u8)["\']'
-            ]
-            
-            # 尝试所有HLS模式
-            for pattern in hls_patterns:
-                matches = re.findall(pattern, html_content)
-                for match in matches:
-                    hls_urls.add(match)
-            
-            # 如果找到HLS链接，尝试从中提取所有画质
-            if hls_urls:
-                for hls_url in hls_urls:
-                    # 解析m3u8文件获取所有画质
-                    hls_qualities = self._parse_hls_qualities(hls_url)
-                    
-                    # 如果成功解析出多个画质
-                    if hls_qualities:
-                        for quality, url in hls_qualities.items():
-                            encoded = self.e64(f'{0}@@@@{url}')
-                            plist.append(f"{quality}${encoded}")
-                    else:
-                        # 如果无法解析画质，添加原始HLS链接
-                        encoded = self.e64(f'{0}@@@@{hls_url}')
-                        plist.append(f"HLS${encoded}")
-
-        except Exception as e:
-            plist = [f"{vn}${self.e64(f'{1}@@@@{ids[0]}')}"]
-            print(f"获取视频信息失败: {str(e)}")
-        
-        if plist:
-            # 按质量排序
-            def custom_sort_key(url):
-                quality = url.split('$')[0]
-                number = ''.join(filter(str.isdigit, quality))
-                number = int(number) if number else 0
-                return -number, quality
-            
-            plist.sort(key=custom_sort_key)
-            vod['vod_play_url'] = '#'.join(plist)
-        
         return {'list': [vod]}
-        
-    def _parse_hls_qualities(self, m3u8_url):
-        """解析m3u8文件，提取所有画质选项"""
-        try:
-            # 发送请求获取m3u8内容
-            response = self.session.get(m3u8_url, headers=self.headers, timeout=5)
-            response.encoding = 'utf-8'
-            m3u8_content = response.text
-            
-            # 解析m3u8内容中的画质信息
-            qualities = {}
-            # 查找EXT-X-STREAM-INF标签，这通常包含不同画质的信息
-            import re
-            stream_inf_pattern = r'#EXT-X-STREAM-INF:.*?RESOLUTION=([\d]+x[\d]+).*?\n([^\n]+)'
-            matches = re.findall(stream_inf_pattern, m3u8_content)
-            
-            for resolution, path in matches:
-                # 从分辨率中提取高度作为画质标识（如1080p, 720p等）
-                height = resolution.split('x')[1]
-                quality = f"{height}p"
-                
-                # 构建完整的URL
-                if path.startswith('http'):
-                    full_url = path
-                else:
-                    # 处理相对路径
-                    from urllib.parse import urlparse, urljoin
-                    base_url = urlparse(m3u8_url).scheme + '://' + urlparse(m3u8_url).netloc
-                    full_url = urljoin(m3u8_url, path)
-                
-                qualities[quality] = full_url
-            
-            # 如果找到画质信息，按清晰度从高到低排序
-            if qualities:
-                sorted_qualities = {}
-                for quality in sorted(qualities.keys(), key=lambda x: int(''.join(filter(str.isdigit, x))), reverse=True):
-                    sorted_qualities[quality] = qualities[quality]
-                return sorted_qualities
-            
-            return None
-        except Exception as e:
-            print(f"解析HLS画质失败: {str(e)}")
-            return None
 
     def searchContent(self, key, quick, pg="1"):
         data = self.getpq(f'/search/{key}?page={pg}')
         return {'list': self.getlist(data(".thumb-list--sidebar .thumb-list__item")), 'page': pg}
 
     def playerContent(self, flag, id, vipFlags):
+        p,url=1,id
         headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5410.0 Safari/537.36',
-            'pragma': 'no-cache',
-            'cache-control': 'no-cache',
-            'sec-ch-ua-platform': '"Windows"',
-            'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
-            'dnt': '1',
-            'sec-ch-ua-mobile': '?0',
             'origin': self.host,
-            'sec-fetch-site': 'cross-site',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-dest': 'empty',
             'referer': f'{self.host}/',
-            'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'priority': 'u=1, i',
         }
-        ids = self.d64(id).split('@@@@')
-        return {'parse': int(ids[0]), 'url': ids[1], 'header': headers}
+        if id.startswith("666_"):
+            p,url=0,id[4:]
+        return {'parse': p, 'url': url, 'header': headers}
 
     def localProxy(self, param):
         pass
 
     def gethost(self):
         try:
-            response = self.fetch('https://xhamster.com', headers=self.headers, allow_redirects=False)
+            response = self.fetch('https://zh.xhamster1.desi/', headers=self.headers, allow_redirects=False)
             return response.headers['Location']
         except Exception as e:
             print(f"获取主页失败: {str(e)}")
@@ -324,12 +211,9 @@ class Spider(Spider):
 
     def getpq(self, path=''):
         h = '' if path.startswith('http') else self.host
-        response = self.session.get(f'{h}{path}').text
-        try:
-            return pq(response)
-        except Exception as e:
-            print(f"{str(e)}")
-            return pq(response.encode('utf-8'))
+        response = self.session.get(f'{h}{path}')
+        return pq(response.content)
+
 
     def getjsdata(self, data):
         vhtml = data("script[id='initials-script']").text()
