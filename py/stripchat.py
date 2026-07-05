@@ -20,7 +20,6 @@ class Spider(Spider):
 
     def init(self, extend="{}"):
         origin = 'https://zh.stripchat.com'
-        self.host = origin
         self.headers = {
             'Origin': origin,
             'Referer': f"{origin}/",
