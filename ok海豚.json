@@ -551,6 +551,16 @@
 			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/短剧聚合.py"
 		},
 		{
+			"key":"kuwo",
+			"name":"🐬酷我听书",
+			"type":1,
+			"api":"http:\/\/xiaobaibai.feng1210.top\/algorith\/music\/kuwo_source.php",
+			"searchable":1,
+			"quickSearch":1,
+			"playUrl":"json:http:\/\/xiaobaibai.feng1210.top\/\/jiexi.php?data=f73a15dd14154af516e867855a58f417&url=",
+			"changeable":1
+		},
+		{
             "key": "捡的音乐",
             "name": "🐬爱听音乐[音乐]",
             "type": 3,
@@ -561,16 +571,6 @@
             "jar": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/jar_js/so.jar",
             "filterable": 1
         },
-		{
-			"key":"kuwo",
-			"name":"🐬酷我音乐[音乐]",
-			"type":1,
-			"api":"http:\/\/xiaobaibai.feng1210.top\/algorith\/music\/kuwo_source.php",
-			"searchable":1,
-			"quickSearch":1,
-			"playUrl":"json:http:\/\/xiaobaibai.feng1210.top\/\/jiexi.php?data=f73a15dd14154af516e867855a58f417&url=",
-			"changeable":1
-		},
 		{
 			"key":"qqmusic",
 			"name":"🐬QQ音乐[音乐]",
