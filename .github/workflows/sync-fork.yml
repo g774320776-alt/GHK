@@ -1,0 +1,40 @@
+name: 定时同步上游FGBLH/HKL
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+env:
+  UPSTREAM_URL: "https://github.com/FGBLH/HKL.git"
+  SYNC_BRANCH: "main"
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 完整克隆仓库代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 配置Git机器人用户
+        run: |
+          git config --global user.name "Sync Bot"
+          git config --global user.email "sync-bot@github.com"
+
+      - name: 添加上游远程仓库
+        run: |
+          git remote remove upstream || true
+          git remote add upstream ${{ env.UPSTREAM_URL }}
+
+      - name: 拉取上游全部更新
+        run: git fetch upstream --prune --tags
+
+      - name: 变基同步上游main分支
+        run: |
+          git checkout ${{ env.SYNC_BRANCH }}
+          git rebase upstream/${{ env.SYNC_BRANCH }}
+
+      - name: 推送同步后的代码到自己Fork
+        run: git push origin ${{ env.SYNC_BRANCH }} --force-with-lease
+
