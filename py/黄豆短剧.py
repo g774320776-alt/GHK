@@ -159,10 +159,18 @@ class Spider(BaseSpider):
                     if play_url:
                         play_url_parts.append(f"{ep_title}${play_url}")
 
+                cover = data.get('cover', '')
+                # 加密海报走本地代理解密
+                if cover and ('encryptimages' in cover or '.bng' in cover):
+                    try:
+                        cover = f"{self.getProxyUrl()}&url={urllib.parse.quote(cover)}"
+                    except Exception:
+                        pass
+
                 vod = {
                     "vod_id": str(data['id']),
                     "vod_name": data.get('t', ''),
-                    "vod_pic": data.get('cover', ''),
+                    "vod_pic": cover,
                     "type_name": data.get('sub', ''),
                     "vod_year": '',
                     "vod_area": '',
@@ -285,78 +293,95 @@ class Spider(BaseSpider):
         key_str = prefix + video_id + version
         return hashlib.md5(key_str.encode()).digest()
 
-    def localProxy(self, params):
-        """本地代理 - 处理海报图片解密"""
+    def localProxy(self, param):
+        """本地代理 - 解密海报图片"""
         try:
-            do = params.get('do', '')
-            if do == 'img':
-                url = params.get('url', '')
-                if not url:
-                    return 0
-                return self._decrypt_image(url)
-        except Exception as e:
-            print(f"localProxy error: {e}")
-        return 0
-
-    def _decrypt_image(self, url):
-        """解密加密的海报图片"""
-        import hashlib
-        import re
-        try:
+            url = param['url']
             r = self.session.get(url, timeout=15, verify=False)
-            encrypted = r.content
-
-            # 提取 imageId (64位哈希)
-            m = re.search(r'([0-9a-f]{64})', url)
-            if not m:
-                return [200, "image/png", {}, encrypted]
-
-            image_id = m.group(1)
-
-            # 提取 version
-            ver_match = re.search(r'[?&]version=([^&#]+)', url)
-            version = ver_match.group(1) if ver_match else 'v1'
-
-            # 计算解密 key
-            prefix = "xnaichanping"
-            key_str = prefix + image_id + version
-            key_bytes = hashlib.md5(key_str.encode()).digest()
-
-            # AES-128-CBC 解密，IV=0
-            from Crypto.Cipher import AES
-            iv = bytes.fromhex('00000000000000000000000000000000')
-            cipher = AES.new(key_bytes, AES.MODE_CBC, iv)
-            decrypted = cipher.decrypt(encrypted)
-
-            # 去掉 PKCS7 padding
-            pad_len = decrypted[-1]
-            if 1 <= pad_len <= 16:
-                decrypted = decrypted[:-pad_len]
-
+            decrypted = self._aes_decrypt_img(r.content, url)
             # 确定图片类型
-            content_type = "image/png"
-            if decrypted[:3] == b'\xff\xd8\xff':
-                content_type = "image/jpeg"
-            elif decrypted[:8] == b'\x89PNG\r\n\x1a\n':
+            content_type = "image/jpeg"
+            if decrypted[:8] == b'\x89PNG\r\n\x1a\n':
                 content_type = "image/png"
-            elif decrypted[:6] == b'GIF87a' or decrypted[:6] == b'GIF89a':
+            elif decrypted[:6] in (b'GIF87a', b'GIF89a'):
                 content_type = "image/gif"
             elif decrypted[:4] == b'RIFF' and decrypted[8:12] == b'WEBP':
                 content_type = "image/webp"
-
-            return [200, content_type, {}, decrypted]
+            return [200, content_type, decrypted]
         except Exception as e:
-            print(f"_decrypt_image error: {e}")
-            return 0
+            print(f"localProxy error: {e}")
+            return [500, 'text/html', b'']
+
+    def _aes_decrypt_img(self, encrypted, url):
+        """AES 解密图片 - 网站自定义 CBC 算法"""
+        import hashlib
+        import re
+        from Crypto.Cipher import AES
+
+        # 提取 imageId (64位哈希)
+        m = re.search(r'([0-9a-f]{64})', url)
+        if not m:
+            return encrypted
+        image_id = m.group(1)
+
+        # 提取 version
+        ver_match = re.search(r'[?&]version=([^&#]+)', url)
+        version = ver_match.group(1) if ver_match else 'v1'
+
+        # 计算解密 key
+        prefix = "xnaichanping"
+        key_str = prefix + image_id + version
+        key_bytes = hashlib.md5(key_str.encode()).digest()
+
+        # 网站自定义 CBC 解密 (mC 函数)
+        t = len(encrypted) // 16
+        if t < 1:
+            return encrypted
+
+        iv = bytes(16)  # IV=0
+
+        # 取最后一块 XOR 16
+        last_block = encrypted[(t - 1) * 16:t * 16]
+        a = bytes([b ^ 16 for b in last_block])
+
+        # 加密 a
+        cipher_enc = AES.new(key_bytes, AES.MODE_CBC, iv)
+        o = cipher_enc.encrypt(a)[:16]
+
+        # 扩展密文并解密
+        extended = encrypted + o
+        cipher_dec = AES.new(key_bytes, AES.MODE_CBC, iv)
+        c = cipher_dec.decrypt(extended)
+
+        # 自定义 CBC：每块 XOR 前一块密文
+        u = bytearray(len(c))
+        u[:16] = c[:16]
+        for f in range(1, t):
+            for h in range(16):
+                u[f * 16 + h] = c[f * 16 + h] ^ encrypted[(f - 1) * 16 + h]
+
+        # 去掉 padding
+        d = u[-1]
+        if 1 <= d <= 16:
+            u = u[:-d]
+
+        return bytes(u)
 
     # ==================== 内部方法 ====================
 
     def _parse_vod(self, item):
-        """解析视频条目"""
+        """解析视频条目 - 海报用 getProxyUrl 代理解密"""
+        cover = item.get('cover', '')
+        # 加密海报走本地代理解密
+        if cover and ('encryptimages' in cover or '.bng' in cover):
+            try:
+                cover = f"{self.getProxyUrl()}&url={urllib.parse.quote(cover)}"
+            except Exception:
+                pass
         return {
             "vod_id": str(item['id']),
             "vod_name": item.get('t', ''),
-            "vod_pic": item.get('cover', ''),
+            "vod_pic": cover,
             "vod_remarks": f"{item.get('serial', '')}·{item.get('eps', 0)}集",
         }
 
