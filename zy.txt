@@ -47,7 +47,7 @@
             "name": "咪咕直播",
             "type": 0,
             "ua": "okhttp/5.3.2",
-            "url": "http://www.52top.com.cn:678/downloads/migu.txt"
+            "url": "https://gh-proxy.com/https://raw.githubusercontent.com/g774320776-alt/migu_video/refs/heads/main/interface.txt"
         }
     ],
     "parses": [
